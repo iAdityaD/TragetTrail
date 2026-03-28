@@ -15,6 +15,8 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+.vscode/
+.metadata
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
@@ -41,10 +43,18 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/local.properties
 
 # Android release signing
 /android/key.properties
 /android/app/*.jks
 /android/app/*.keystore
+
+# iOS generated files
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+/ios/Flutter/ephemeral/
+/ios/.symlinks/
+/ios/Pods/
 
 .fake

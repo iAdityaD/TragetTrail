@@ -117,6 +117,29 @@ Build Android App Bundle for Play Store:
 flutter build appbundle --release
 ```
 
+## Install The APK On Android
+
+To share the app directly without the Play Store, build the release APK:
+
+```bash
+flutter build apk --release
+```
+
+The APK will be generated at:
+
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
+
+To install it on another Android device:
+
+1. Copy `app-release.apk` to the phone using USB, Drive, WhatsApp, Telegram, or email.
+2. Open the APK file on the phone.
+3. If Android asks, allow installs from that source.
+4. Tap `Install`.
+
+For updates to work correctly later, keep using the same signing key for future builds.
+
 ## Platform Notes
 
 ### Android
