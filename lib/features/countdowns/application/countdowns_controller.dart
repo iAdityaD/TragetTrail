@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -45,8 +47,7 @@ class CountdownsController extends AsyncNotifier<List<Countdown>> {
     );
 
     await ref.read(countdownRepositoryProvider).save(countdown);
-    state = AsyncData(await ref.read(countdownRepositoryProvider).fetchAll());
-    await ref.read(reminderOrchestratorProvider).sync();
+    await _refreshState();
   }
 
   Future<void> updateCountdown(Countdown countdown) async {
@@ -57,14 +58,12 @@ class CountdownsController extends AsyncNotifier<List<Countdown>> {
     await ref.read(countdownRepositoryProvider).save(
           countdown.copyWith(updatedAt: DateTime.now()),
         );
-    state = AsyncData(await ref.read(countdownRepositoryProvider).fetchAll());
-    await ref.read(reminderOrchestratorProvider).sync();
+    await _refreshState();
   }
 
   Future<void> delete(String countdownId) async {
     await ref.read(countdownRepositoryProvider).delete(countdownId);
-    state = AsyncData(await ref.read(countdownRepositoryProvider).fetchAll());
-    await ref.read(reminderOrchestratorProvider).sync();
+    await _refreshState();
   }
 
   Future<void> deleteMany(Iterable<String> countdownIds) async {
@@ -74,8 +73,7 @@ class CountdownsController extends AsyncNotifier<List<Countdown>> {
     }
 
     await ref.read(countdownRepositoryProvider).deleteMany(ids);
-    state = AsyncData(await ref.read(countdownRepositoryProvider).fetchAll());
-    await ref.read(reminderOrchestratorProvider).sync();
+    await _refreshState();
   }
 
   Future<void> togglePinned(Countdown countdown) async {
@@ -84,6 +82,15 @@ class CountdownsController extends AsyncNotifier<List<Countdown>> {
         isPinned: !countdown.isPinned,
         updatedAt: DateTime.now(),
       ),
+    );
+  }
+
+  Future<void> _refreshState() async {
+    state = AsyncData(await ref.read(countdownRepositoryProvider).fetchAll());
+    unawaited(
+      ref.read(reminderOrchestratorProvider).sync().catchError((_) {
+        // Best-effort sync; saving local state should not block the UI.
+      }),
     );
   }
 }
